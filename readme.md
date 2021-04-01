@@ -13,3 +13,6 @@ Notes:
 * You are free to choose any publicly available airport and flight/route database
 * You are free to choose to use any open-source libraries
 * You are free to choose any programming language (TypeScript is preferred, but not mandatory)
+
+## Data sources
+This application uses [airport](https://openflights.org/data.html#airport) and [route](https://openflights.org/data.html#route) information from [openflights.org](https://openflights.org). The data for this applicaion is downloaded and processed by running `npm run get-data`.
