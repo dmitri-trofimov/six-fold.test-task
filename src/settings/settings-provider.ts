@@ -4,7 +4,7 @@ export class SettingsProvider  {
     getSettings(): Settings {
         return {
             connection: {
-                port: 8081
+                port: 8080
             }
         }
     }

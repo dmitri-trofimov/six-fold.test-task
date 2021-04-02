@@ -1,13 +1,13 @@
 import { DataProvider } from "../utils/data-provider";
-import { Route } from "./route";
+import { Connection } from "./connection";
 
 const ROUTES_DATA_URL = "https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat";
 
-export class RouteDataProvider extends DataProvider {
-    public async getRoutes(): Promise<Route[]> {
+export class ConnectionDataProvider extends DataProvider {
+    public async getRoutes(): Promise<Connection[]> {
         const lines = await this.getParsedData(ROUTES_DATA_URL);
 
-        const result: Route[] = [];
+        const result: Connection[] = [];
 
         for (const line of lines) {
             const sourceIata = line[2];
