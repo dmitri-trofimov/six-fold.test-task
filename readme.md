@@ -15,4 +15,4 @@ Notes:
 * You are free to choose any programming language (TypeScript is preferred, but not mandatory)
 
 ## Data sources
-This application uses [airport](https://openflights.org/data.html#airport) and [route](https://openflights.org/data.html#route) information from [openflights.org](https://openflights.org). The data for this applicaion is downloaded and processed by running `npm run get-data`.
+This application uses [airport](https://openflights.org/data.html#airport) and [route](https://openflights.org/data.html#route) information from [openflights.org](https://openflights.org). The data has been pre-downloaded and pre-converted into JSON format by a tool that can be found in [tools/data-retriever](https://github.com/dmitri-trofimov/six-fold.test-task/tree/main/tools/data_retriever) folder.
