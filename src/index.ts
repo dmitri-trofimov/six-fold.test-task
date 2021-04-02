@@ -1,13 +1,18 @@
+import "reflect-metadata";
 import express from "express";
+import { container } from "tsyringe"
+import { SettingsProvider } from "./settings/settings-provider"
+
+
+const settings = container.resolve(SettingsProvider).getSettings();
 
 const app = express();
-const port = 8080; // default port to listen
 
-app.get("/", (_req, res) => {
-    res.send("Hello world!");
+app.get("/airports", (_req, res) => {
+    res.json({ hello: "world "});
 });
 
-// start the Express server
+const port = settings.connection.port;
 app.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
 });
