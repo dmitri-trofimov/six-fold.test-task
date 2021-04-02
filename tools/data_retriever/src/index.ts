@@ -1,25 +1,30 @@
+import fs from "fs";
 import { Airport } from "./airports/airport";
 import { AirportDataProvider } from "./airports/airport-data-provider";
 import { Route } from "./routes/route";
 import { RouteDataProvider } from "./routes/route-data-provider";
 
+const DATA_FILE_PATH = "../../src/data/data.json";
+
 void run();
 
 async function run(): Promise<void> {
-    let airports: Airport[];
-    let routes: Route[];
+    const airports = await new AirportDataProvider().getAirports();
+    const routes = await new RouteDataProvider().getRoutes();
 
-    await benchmark("Getting airport data... ", async () => { airports = await new AirportDataProvider().getAirports(); });
-    await benchmark("Getting routes data...  ", async () => { routes = await new RouteDataProvider().getRoutes(); });
+    saveData(airports, routes);
 }
 
-async function benchmark(funcName: string, func: () => Promise<void>): Promise<void> {
-    process.stdout.write(funcName);
+function saveData(airports: Airport[], routes: Route[]) {
+    const stringData = getStringifiedData(airports, routes);
+    fs.writeFileSync(DATA_FILE_PATH, stringData);
+}
 
-    const start = new Date();
-    await func();
-    const end = new Date();
+function getStringifiedData(airports: Airport[], routes: Route[]): string {
+    const data = {
+        airports,
+        routes
+    };
 
-    const milliseconds = end.getTime() - start.getTime();
-    console.log(`${milliseconds}ms`);
+    return JSON.stringify(data);
 }
