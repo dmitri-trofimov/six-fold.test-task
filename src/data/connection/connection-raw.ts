@@ -1,4 +1,4 @@
-export interface Connection {
+export interface ConnectionRaw {
     sourceIata: string;
     destinationIata: string;
 }

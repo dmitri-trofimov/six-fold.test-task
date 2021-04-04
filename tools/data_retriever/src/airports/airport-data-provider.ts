@@ -20,7 +20,7 @@ export class AirportDataProvider extends DataProvider {
             const airport: Airport = {
                 iata: iata,
                 latitude: Number.parseFloat(line[6]),
-                longitide: Number.parseFloat(line[7])
+                longitude: Number.parseFloat(line[7])
             };
 
             result.push(airport);

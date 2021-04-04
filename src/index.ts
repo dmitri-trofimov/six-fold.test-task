@@ -1,38 +1,40 @@
-import "reflect-metadata";
 import express from "express";
-import { container } from "tsyringe"
-import { SettingsProvider } from "./settings/settings-provider"
-import { DataProvider } from "./data/data-provider";
+import "reflect-metadata";
+import { container } from "tsyringe";
+import { AirportRepository } from "./data/airport/airport-repository";
+import { ConnectionRepository } from "./data/connection/connection-repository";
+import { SettingsProvider } from "./settings/settings-provider";
 
-const dataProvider = container.resolve(DataProvider);
+const airportRepository = container.resolve(AirportRepository);
+const connectionRepository = container.resolve(ConnectionRepository);
 const settings = container.resolve(SettingsProvider).getSettings();
 
 const app = express();
 
 app.get("/airports", async (_req, res) => {
-    const data = await dataProvider.getData();
+    const airports = airportRepository.getAirports();
 
     res.header("Content-Type", "application/json");
     res.send(
         JSON.stringify(
             {
-                totalCount: data.airports.length,
-                airports: data.airports
-            }, 
+                totalCount: airports.length,
+                airports: airports
+            },
             null,
             4));
 });
 
 app.get("/connections", async (_req, res) => {
-    const data = await dataProvider.getData();
+    const connections = connectionRepository.getConnections();
 
     res.header("Content-Type", "application/json");
     res.send(
         JSON.stringify(
             {
-                totalCount: data.connections.length,
-                connections: data.connections
-            }, 
+                totalCount: connections.length,
+                connections: connections
+            },
             null,
             4));
 });

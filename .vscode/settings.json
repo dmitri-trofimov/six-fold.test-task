@@ -1,0 +1,10 @@
+{
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "editor.formatOnSave": true,
+    "mochaExplorer.files": "test/**/*.ts",
+    "mochaExplorer.require": ["ts-node/register", "reflect-metadata"]
+}

@@ -1,6 +1,8 @@
+import { injectable } from "tsyringe";
 import { Settings } from "./settings";
 
-export class SettingsProvider  {
+@injectable()
+export class SettingsProvider {
     getSettings(): Settings {
         return {
             connection: {
