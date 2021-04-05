@@ -1,4 +1,4 @@
-import should from "should";
+import { expect } from "chai";
 import sinon from "sinon";
 import { AirportRaw } from "../../src/data/airport/airport-raw";
 import { AirportRepository } from "../../src/data/airport/airport-repository";
@@ -29,8 +29,8 @@ describe("AirportGraphBuilder", () => {
                         airportRepoStub,
                         connectionsRepoStub);
 
-                should(() => createInstanceWithoutCalculator(null)).throwError("Argument 'airportDistanceCalculator' is not defined.");
-                should(() => createInstanceWithoutCalculator(undefined)).throwError("Argument 'airportDistanceCalculator' is not defined.");
+                expect(() => createInstanceWithoutCalculator(null)).to.throw("Argument 'airportDistanceCalculator' is not defined.");
+                expect(() => createInstanceWithoutCalculator(undefined)).to.throw("Argument 'airportDistanceCalculator' is not defined.");
             });
         });
 
@@ -42,8 +42,8 @@ describe("AirportGraphBuilder", () => {
                         repo as AirportRepository,
                         connectionsRepoStub);
 
-                should(() => createInstanceWithoutAirRepo(null)).throwError("Argument 'airportRepository' is not defined.");
-                should(() => createInstanceWithoutAirRepo(undefined)).throwError("Argument 'airportRepository' is not defined.");
+                expect(() => createInstanceWithoutAirRepo(null)).to.throw("Argument 'airportRepository' is not defined.");
+                expect(() => createInstanceWithoutAirRepo(undefined)).to.throw("Argument 'airportRepository' is not defined.");
             });
         });
 
@@ -55,8 +55,8 @@ describe("AirportGraphBuilder", () => {
                         airportRepoStub,
                         repo as ConnectionRepository);
 
-                should(() => createInstanceWithoutConnectionRepo(null)).throwError("Argument 'connectionRepository' is not defined.");
-                should(() => createInstanceWithoutConnectionRepo(undefined)).throwError("Argument 'connectionRepository' is not defined.");
+                expect(() => createInstanceWithoutConnectionRepo(null)).to.throw("Argument 'connectionRepository' is not defined.");
+                expect(() => createInstanceWithoutConnectionRepo(undefined)).to.throw("Argument 'connectionRepository' is not defined.");
             });
         });
     });
@@ -95,17 +95,17 @@ describe("AirportGraphBuilder", () => {
         it("should add all airports from repo", () => {
             const tll = graph.airports.get("TLL");
 
-            should(tll).not.be.undefined();
-            tll?.iata.should.eql(tllRaw.iata);
-            tll?.latitude.should.eql(tllRaw.latitude);
-            tll?.longitude.should.eql(tllRaw.longitude);
+            expect(tll).to.not.be.undefined;
+            expect(tll?.iata).to.equal(tllRaw.iata);
+            expect(tll?.latitude).to.equal(tllRaw.latitude);
+            expect(tll?.longitude).to.equal(tllRaw.longitude);
 
             const rix = graph.airports.get("RIX");
 
-            should(rix).not.be.undefined();
-            rix?.iata.should.eql(rixRaw.iata);
-            rix?.latitude.should.eql(rixRaw.latitude);
-            rix?.longitude.should.eql(rixRaw.longitude);
+            expect(rix).to.not.be.undefined;
+            expect(rix?.iata).to.equal(rixRaw.iata);
+            expect(rix?.latitude).to.equal(rixRaw.latitude);
+            expect(rix?.longitude).to.equal(rixRaw.longitude);
         });
 
         it("should add all connections from repo for existing airports", () => {
@@ -113,17 +113,17 @@ describe("AirportGraphBuilder", () => {
             const rix = graph.airports.get("RIX");
 
             const tllRixConnection = tll?.connections.filter(x => x.airport.iata === "RIX")[0];
-            tllRixConnection?.airport.should.eql(rix);
-            tllRixConnection?.distance.should.be.approximately(282, .5);
+            expect(tllRixConnection?.airport).to.equal(rix);
+            expect(tllRixConnection?.distance).to.be.approximately(282, .5);
 
             const rixTllConnection = rix?.connections.filter(x => x.airport.iata === "TLL")[0];
-            rixTllConnection?.airport.should.eql(tll);
-            rixTllConnection?.distance.should.be.approximately(282, .5);
+            expect(rixTllConnection?.airport).to.equal(tll);
+            expect(rixTllConnection?.distance).to.be.approximately(282, .5);
         });
 
         it("should not add conections that include airport not present in repo", () => {
-            graph.airports.get("TLL")?.connections.should.have.length(1);
-            graph.airports.get("RIX")?.connections.should.have.length(1);
+            expect(graph.airports.get("TLL")?.connections).to.have.length(1);
+            expect(graph.airports.get("RIX")?.connections).to.have.length(1);
         });
     });
 });

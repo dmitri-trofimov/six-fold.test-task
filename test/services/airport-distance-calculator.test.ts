@@ -1,4 +1,4 @@
-import should from "should";
+import { expect } from "chai";
 import { Airport } from "../../src/services/airport_graph/airport";
 import { AirportDistanceCalculator } from "../../src/services/airport_graph/airport-distance-calculator";
 
@@ -33,22 +33,22 @@ describe("AirportDistanceCalculator", () => {
 
         describe("and first airport is not provided", () => {
             it("should throw", () => {
-                should(() => calculator.getDistance(nullAirport, tllAirport)).throwError("Argument 'airport1' is not defined.");
-                should(() => calculator.getDistance(undefinedAirport, tllAirport)).throwError("Argument 'airport1' is not defined.");
+                expect(() => calculator.getDistance(nullAirport, tllAirport)).to.throw("Argument 'airport1' is not defined.");
+                expect(() => calculator.getDistance(undefinedAirport, tllAirport)).to.throw("Argument 'airport1' is not defined.");
             });
         });
 
         describe("and second airport is not provided", () => {
             it("should throw", () => {
-                should(() => calculator.getDistance(tllAirport, nullAirport)).throwError("Argument 'airport2' is not defined.");
-                should(() => calculator.getDistance(tllAirport, undefinedAirport)).throwError("Argument 'airport2' is not defined.");
+                expect(() => calculator.getDistance(tllAirport, nullAirport)).to.throw("Argument 'airport2' is not defined.");
+                expect(() => calculator.getDistance(tllAirport, undefinedAirport)).to.throw("Argument 'airport2' is not defined.");
             });
         });
 
         describe("and both airports are provided", () => {
             it("should calculate correctly", () => {
                 const d = calculator.getDistance(tllAirport, rixAirport);
-                d.should.be.approximately(282, .5);
+                expect(d).to.be.approximately(282, .5);
             });
         })
     });
