@@ -1,3 +1,4 @@
+import { injectable } from "tsyringe";
 import { Settings } from "../settings/settings";
 import { SettingsProvider } from "../settings/settings-provider";
 import { Airport } from "./airport_graph/airport";
@@ -5,6 +6,7 @@ import { AirportGraph } from "./airport_graph/airport-graph";
 import { AirportGraphBuilder } from "./airport_graph/airport-graph-builder";
 import { Connection } from "./airport_graph/connection";
 
+@injectable()
 export class PathFinder {
     private readonly _graph: AirportGraph;
     private readonly _settings: Settings;
