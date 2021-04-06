@@ -1,5 +1,9 @@
 export interface Settings {
-    readonly connection: { 
+    readonly connection: {
         readonly port: number
     };
+
+    readonly pathFinding: {
+        readonly maxLegCount: number;
+    }
 }

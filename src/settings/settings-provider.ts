@@ -7,6 +7,9 @@ export class SettingsProvider {
         return {
             connection: {
                 port: 8080
+            },
+            pathFinding: {
+                maxLegCount: 4
             }
         }
     }

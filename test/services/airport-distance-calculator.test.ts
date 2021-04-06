@@ -9,6 +9,8 @@ describe("AirportDistanceCalculator", () => {
         let rixAirport: Airport;
         let nullAirport: Airport;
         let undefinedAirport: Airport;
+        let northPole: Airport;
+        let southPole: Airport;
 
         before(() => {
             calculator = new AirportDistanceCalculator();
@@ -29,6 +31,20 @@ describe("AirportDistanceCalculator", () => {
 
             nullAirport = null as unknown as Airport;
             undefinedAirport = undefined as unknown as Airport;
+
+            northPole = {
+                iata: "NORTHPOLE",
+                latitude: 90,
+                longitude: 0,
+                connections: []
+            };
+
+            southPole = {
+                iata: "SOUTHPOLE",
+                latitude: -90,
+                longitude: 0,
+                connections: []
+            };
         });
 
         describe("and first airport is not provided", () => {
@@ -46,9 +62,18 @@ describe("AirportDistanceCalculator", () => {
         });
 
         describe("and both airports are provided", () => {
-            it("should calculate correctly", () => {
-                const d = calculator.getDistance(tllAirport, rixAirport);
-                expect(d).to.be.approximately(282, .5);
+            describe("and they are north pole and south pole", () => {
+                it("should calculate correctly", () => {
+                    const d = calculator.getDistance(northPole, southPole);
+                    expect(d).to.be.approximately(20024, 1);
+                })
+            });
+
+            describe("and they are TLL and RIX", () => {
+                it("should calculate correctly", () => {
+                    const d = calculator.getDistance(tllAirport, rixAirport);
+                    expect(d).to.be.approximately(282, .5);
+                });
             });
         })
     });
