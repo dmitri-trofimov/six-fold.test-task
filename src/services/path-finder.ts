@@ -45,15 +45,15 @@ export class PathFinder {
 
         const destination = this._graph.airports.get(destIata) as Airport;
 
-        let currentQueue: Waypoint[] = [sourcePoint];
-        let nextQueue: Waypoint[] = [];
+        let currentQueue = new Set<Waypoint>([sourcePoint]);
+        let nextQueue = new Set<Waypoint>();
 
         const bestWaypoints = new Map<string, Waypoint[]>();
         this._addWaypoint(bestWaypoints, sourcePoint);
 
         const reachedDestination: Waypoint[] = [];
 
-        while (currentQueue.length > 0) {
+        while (currentQueue.size > 0) {
             for (const waypoint of currentQueue) {
                 if (waypoint.connection.airport === destination) {
                     reachedDestination.push(waypoint);
@@ -81,12 +81,12 @@ export class PathFinder {
                     this._addWaypoint(bestWaypoints, newWaypoint);
                     this._purgeInefficientWaypointsFromCurrentQueue(currentQueue, efficiency.inefficientWaypoints);
 
-                    currentQueue.push(newWaypoint);
+                    currentQueue.add(newWaypoint);
                 }
             }
 
             currentQueue = nextQueue;
-            nextQueue = [];
+            nextQueue = new Set<Waypoint>();
         }
 
         if (reachedDestination.length === 0) {
@@ -107,7 +107,6 @@ export class PathFinder {
         waypoint: Waypoint
     ): void {
         const iata = waypoint.connection.airport.iata;
-        const index = waypoint.waypointIndex;
 
         let waypoints = bestWaypoints.get(iata);
         if (!waypoints) {
@@ -127,19 +126,19 @@ export class PathFinder {
             };
         }
 
-        const lessEfficientWaypoints: Waypoint[] = [];
+        const inefficientWaypoints: Waypoint[] = [];
 
         for (const existingWaypoint of existingWaypoints) {
             if (existingWaypoint.waypointIndex > waypoint.waypointIndex) {
                 if (existingWaypoint.fullLength >= waypoint.fullLength) {
                     // new path point is more efficient
-                    lessEfficientWaypoints.push(existingWaypoint);
+                    inefficientWaypoints.push(existingWaypoint);
                     continue;
                 }
             } else if (existingWaypoint.waypointIndex === waypoint.waypointIndex) {
                 if (existingWaypoint.fullLength >= waypoint.fullLength) {
                     // new path point is more efficient
-                    lessEfficientWaypoints.push(existingWaypoint);
+                    inefficientWaypoints.push(existingWaypoint);
                     continue;
                 } else {
                     // existing path point is more efficient
@@ -165,7 +164,7 @@ export class PathFinder {
         // if we got here, then the new path point deserves its place among the most efficient ones
         return {
             canBeAdded: true,
-            inefficientWaypoints: lessEfficientWaypoints
+            inefficientWaypoints: inefficientWaypoints
         };
     }
 
@@ -185,22 +184,9 @@ export class PathFinder {
         }
     }
 
-    private _purgeInefficientWaypointsFromCurrentQueue(currentQueue: Waypoint[], inefficientWaypoints: Waypoint[]): void {
-        if (inefficientWaypoints.length === 0) {
-            return;
-        }
-
-        for (let queueIndex = currentQueue.length - 1; queueIndex >= 0; queueIndex--) {
-            let queueItem: Waypoint | undefined = currentQueue[queueIndex];
-
-            while (queueItem) {
-                if (inefficientWaypoints.some(x => x === queueItem)) {
-                    currentQueue.splice(queueIndex, 1);
-                    break;
-                }
-
-                queueItem = queueItem.prevWaypoint;
-            }
+    private _purgeInefficientWaypointsFromCurrentQueue(currentQueue: Set<Waypoint>, inefficientWaypoints: Waypoint[]): void {
+        for (const waypoint of inefficientWaypoints) {
+            currentQueue.delete(waypoint);
         }
     }
 
