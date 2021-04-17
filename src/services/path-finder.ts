@@ -40,53 +40,53 @@ export class PathFinder {
             connection: sourceConnection,
             prevWaypoint: undefined,
             fullLength: 0,
-            waypointIndex: 0
+            waypointIndex: 0,
+            isPurged: false,
+            children: []
         };
 
         const destination = this._graph.airports.get(destIata) as Airport;
 
-        let currentQueue = new Set<Waypoint>([sourcePoint]);
-        let nextQueue = new Set<Waypoint>();
+        let queue = new Set<Waypoint>([sourcePoint]);
 
         const bestWaypoints = new Map<string, Waypoint[]>();
         this._addWaypoint(bestWaypoints, sourcePoint);
 
         const reachedDestination: Waypoint[] = [];
 
-        while (currentQueue.size > 0) {
-            for (const waypoint of currentQueue) {
-                if (waypoint.connection.airport === destination) {
-                    reachedDestination.push(waypoint);
-                    continue;
-                }
-
-                if (waypoint.waypointIndex === this._settings.pathFinding.maxLegCount) {
-                    continue;
-                }
-
-                for (const connection of waypoint.connection.airport.connections) {
-                    const newWaypoint: Waypoint = {
-                        connection,
-                        fullLength: waypoint.fullLength + connection.distance,
-                        waypointIndex: waypoint.waypointIndex + 1,
-                        prevWaypoint: waypoint
-                    };
-
-                    const efficiency = this._getWaypointEfficiency(bestWaypoints, newWaypoint);
-                    if (!efficiency.canBeAdded) {
-                        continue;
-                    }
-
-                    this._removeInefficientWaypoints(bestWaypoints, efficiency.inefficientWaypoints);
-                    this._addWaypoint(bestWaypoints, newWaypoint);
-                    this._purgeInefficientWaypointsFromCurrentQueue(currentQueue, efficiency.inefficientWaypoints);
-
-                    currentQueue.add(newWaypoint);
-                }
+        for (const waypoint of queue) {
+            if (waypoint.connection.airport === destination) {
+                reachedDestination.push(waypoint);
+                continue;
             }
 
-            currentQueue = nextQueue;
-            nextQueue = new Set<Waypoint>();
+            if (waypoint.waypointIndex === this._settings.pathFinding.maxLegCount) {
+                continue;
+            }
+
+            for (const connection of waypoint.connection.airport.connections) {
+                const newWaypoint: Waypoint = {
+                    connection,
+                    fullLength: waypoint.fullLength + connection.distance,
+                    waypointIndex: waypoint.waypointIndex + 1,
+                    prevWaypoint: waypoint,
+                    isPurged: false,
+                    children: []
+                };
+
+                const efficiency = this._getWaypointEfficiency(bestWaypoints, newWaypoint);
+                if (!efficiency.canBeAdded) {
+                    continue;
+                }
+
+                this._removeInefficientWaypoints(bestWaypoints, efficiency.inefficientWaypoints);
+                this._addWaypoint(bestWaypoints, newWaypoint);
+
+                this._purgeInefficientWaypointsFromQueue(queue, efficiency.inefficientWaypoints);
+
+                queue.add(newWaypoint);
+                waypoint.children.push(newWaypoint);
+            }
         }
 
         if (reachedDestination.length === 0) {
@@ -184,10 +184,24 @@ export class PathFinder {
         }
     }
 
-    private _purgeInefficientWaypointsFromCurrentQueue(currentQueue: Set<Waypoint>, inefficientWaypoints: Waypoint[]): void {
+    private _purgeInefficientWaypointsFromQueue(queue: Set<Waypoint>, inefficientWaypoints: Waypoint[]): void {
         for (const waypoint of inefficientWaypoints) {
-            currentQueue.delete(waypoint);
+            this._purgeInefficientSingleWaypointFromQueue(queue, waypoint);
         }
+    }
+
+    private _purgeInefficientSingleWaypointFromQueue(queue: Set<Waypoint>, inefficientWaypoint: Waypoint): void {
+        if (inefficientWaypoint.isPurged) {
+            return;
+        }
+
+        queue.delete(inefficientWaypoint);
+
+        for (const childWaypoint of inefficientWaypoint.children) {
+            this._purgeInefficientSingleWaypointFromQueue(queue, childWaypoint);
+        }
+
+        inefficientWaypoint.isPurged = true;
     }
 
     private _getConnectionsListFromLastWaypoint(lastWaypoint: Waypoint): Connection[] {
@@ -211,6 +225,9 @@ interface Waypoint {
     readonly prevWaypoint?: Waypoint;
     readonly fullLength: number;
     readonly waypointIndex: number;
+    readonly children: Waypoint[];
+
+    isPurged: boolean;
 }
 
 interface WaypointEfficiency {
