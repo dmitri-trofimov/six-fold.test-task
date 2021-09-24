@@ -23,7 +23,7 @@ This application uses [airport](https://openflights.org/data.html#airport) and [
 
 ## Requirements
 
-Node v15.12.0 on Windows 10. It is very likely that it will work on lower version of Node on Mac or Linux, but I haven't tested that scenario.
+Node v16.10.0 on Windows 10. It is very likely that it will work on lower version of Node on Mac or Linux, but I haven't tested that scenario.
 
 ## How to run
 
