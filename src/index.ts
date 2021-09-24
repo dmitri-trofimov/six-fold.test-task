@@ -79,9 +79,19 @@ app.get("/:src/:dest", async (req, res) => {
         res.statusCode = 500;
         res.statusMessage = "Error occured. See response body for more info.";
 
+        let message: string;
+
+        if (error instanceof Error) {
+            message = error.message;
+        } else if (typeof error === "string") {
+            message = error;
+        } else {
+            message = "Unknown error."
+        }
+
         sendPrettyJson(res, {
             result: "error",
-            message: error.message
+            message: message
         });
     }
 });
