@@ -24,10 +24,7 @@ describe("AirportGraphBuilder", () => {
         describe("and AirportDistanceCalculator is not provided", () => {
             it("should throw", () => {
                 const createInstanceWithoutCalculator = (calculator: unknown) =>
-                    new AirportGraphBuilder(
-                        calculator as AirportDistanceCalculator,
-                        airportRepoStub,
-                        connectionsRepoStub);
+                    new AirportGraphBuilder(calculator as AirportDistanceCalculator, airportRepoStub, connectionsRepoStub);
 
                 expect(() => createInstanceWithoutCalculator(null)).to.throw("Argument 'airportDistanceCalculator' is not defined.");
                 expect(() => createInstanceWithoutCalculator(undefined)).to.throw("Argument 'airportDistanceCalculator' is not defined.");
@@ -37,10 +34,7 @@ describe("AirportGraphBuilder", () => {
         describe("and AirportRepository is not provided", () => {
             it("should throw", () => {
                 const createInstanceWithoutAirRepo = (repo: unknown) =>
-                    new AirportGraphBuilder(
-                        distanceCalculatorStub,
-                        repo as AirportRepository,
-                        connectionsRepoStub);
+                    new AirportGraphBuilder(distanceCalculatorStub, repo as AirportRepository, connectionsRepoStub);
 
                 expect(() => createInstanceWithoutAirRepo(null)).to.throw("Argument 'airportRepository' is not defined.");
                 expect(() => createInstanceWithoutAirRepo(undefined)).to.throw("Argument 'airportRepository' is not defined.");
@@ -50,10 +44,7 @@ describe("AirportGraphBuilder", () => {
         describe("and ConnectionRepository is not provided", () => {
             it("should throw", () => {
                 const createInstanceWithoutConnectionRepo = (repo: unknown) =>
-                    new AirportGraphBuilder(
-                        distanceCalculatorStub,
-                        airportRepoStub,
-                        repo as ConnectionRepository);
+                    new AirportGraphBuilder(distanceCalculatorStub, airportRepoStub, repo as ConnectionRepository);
 
                 expect(() => createInstanceWithoutConnectionRepo(null)).to.throw("Argument 'connectionRepository' is not defined.");
                 expect(() => createInstanceWithoutConnectionRepo(undefined)).to.throw("Argument 'connectionRepository' is not defined.");
@@ -79,10 +70,7 @@ describe("AirportGraphBuilder", () => {
             rixVnoConnection = { sourceIata: "RIX", destinationIata: "VNO" };
             rixTllConnection = { sourceIata: "RIX", destinationIata: "VNO" };
 
-            airportRepoStub.getAirports.returns([
-                tllRaw,
-                rixRaw
-            ]);
+            airportRepoStub.getAirports.returns([tllRaw, rixRaw]);
 
             connectionsRepoStub.getConnections.returns([tllRixConnection, tllVnoConnection, rixVnoConnection, rixTllConnection]);
 
@@ -114,11 +102,11 @@ describe("AirportGraphBuilder", () => {
 
             const tllRixConnection = tll?.connections.filter(x => x.airport.iata === "RIX")[0];
             expect(tllRixConnection?.airport).to.equal(rix);
-            expect(tllRixConnection?.distance).to.be.approximately(282, .5);
+            expect(tllRixConnection?.distance).to.be.approximately(282, 0.5);
 
             const rixTllConnection = rix?.connections.filter(x => x.airport.iata === "TLL")[0];
             expect(rixTllConnection?.airport).to.equal(tll);
-            expect(rixTllConnection?.distance).to.be.approximately(282, .5);
+            expect(rixTllConnection?.distance).to.be.approximately(282, 0.5);
         });
 
         it("should not add conections that include airport not present in repo", () => {

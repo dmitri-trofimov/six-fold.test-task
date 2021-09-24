@@ -43,14 +43,14 @@ describe("PathFinder", () => {
 
         describe("and there is no connection", () => {
             it("should return empty path", () => {
-                const foundPath = pathFinder.findPath("MOON", "TLL")
+                const foundPath = pathFinder.findPath("MOON", "TLL");
                 expect(foundPath).to.be.empty;
             });
         });
 
         describe("and there is direct connection", () => {
             it("should find path", () => {
-                const foundPath = pathFinder.findPath("TLL", "RIX")
+                const foundPath = pathFinder.findPath("TLL", "RIX");
                 expect(foundPath).to.have.lengthOf(2);
                 expect(foundPath[0].airport.iata).to.eql("TLL");
                 expect(foundPath[1].airport.iata).to.eql("RIX");
@@ -59,7 +59,7 @@ describe("PathFinder", () => {
 
         describe("and there is indirect connection", () => {
             it("should find path", () => {
-                const foundPath = pathFinder.findPath("TLL", "VNO")
+                const foundPath = pathFinder.findPath("TLL", "VNO");
                 expect(foundPath).to.have.lengthOf(3);
                 expect(foundPath[0].airport.iata).to.eql("TLL");
                 expect(foundPath[1].airport.iata).to.eql("RIX");
@@ -69,7 +69,7 @@ describe("PathFinder", () => {
 
         describe("and there is direct connections as well as indirect one", () => {
             it("should choose direct", () => {
-                const foundPath = pathFinder.findPath("TLL1", "VNO1")
+                const foundPath = pathFinder.findPath("TLL1", "VNO1");
                 expect(foundPath).to.have.lengthOf(2);
                 expect(foundPath[0].airport.iata).to.eql("TLL1");
                 expect(foundPath[1].airport.iata).to.eql("VNO1");
@@ -78,7 +78,7 @@ describe("PathFinder", () => {
 
         describe("and there are multiple indirect connections", () => {
             it("should choose the shortest one", () => {
-                const foundPath = pathFinder.findPath("HEL2", "VNO2")
+                const foundPath = pathFinder.findPath("HEL2", "VNO2");
                 expect(foundPath).to.have.lengthOf(3);
                 expect(foundPath[0].airport.iata).to.eql("HEL2");
                 expect(foundPath[1].airport.iata).to.eql("TLL2");
@@ -88,7 +88,7 @@ describe("PathFinder", () => {
 
         describe("and there is a connection, but to many waypoints away", () => {
             it("should not find a path", () => {
-                const foundPath = pathFinder.findPath("HEL3", "FRA3")
+                const foundPath = pathFinder.findPath("HEL3", "FRA3");
                 expect(foundPath).to.have.lengthOf(0);
             });
         });
@@ -104,23 +104,23 @@ function getConfiguredGraphBuilder(): AirportGraphBuilder {
 
         { iata: "TLL", latitude: 59.41329956049999, longitude: 24.832799911499997 },
         { iata: "RIX", latitude: 56.92359924316406, longitude: 23.971099853515625 },
-        { iata: "VNO", latitude: 54.63410200000000, longitude: 25.285801000000000 },
+        { iata: "VNO", latitude: 54.634102, longitude: 25.285801 },
 
         { iata: "TLL1", latitude: 59.41329956049999, longitude: 24.832799911499997 },
         { iata: "RIX1", latitude: 56.92359924316406, longitude: 23.971099853515625 },
-        { iata: "VNO1", latitude: 54.63410200000000, longitude: 25.285801000000000 },
+        { iata: "VNO1", latitude: 54.634102, longitude: 25.285801 },
 
         { iata: "TLL2", latitude: 59.41329956049999, longitude: 24.832799911499997 },
         { iata: "RIX2", latitude: 56.92359924316406, longitude: 23.971099853515625 },
-        { iata: "VNO2", latitude: 54.63410200000000, longitude: 25.285801000000000 },
-        { iata: "HEL2", latitude: 60.31719970703100, longitude: 24.963300704956000 },
+        { iata: "VNO2", latitude: 54.634102, longitude: 25.285801 },
+        { iata: "HEL2", latitude: 60.317199707031, longitude: 24.963300704956 },
 
-        { iata: "HEL3", latitude: 60.31719970703100, longitude: 24.963300704956000 },
+        { iata: "HEL3", latitude: 60.317199707031, longitude: 24.963300704956 },
         { iata: "TLL3", latitude: 59.41329956049999, longitude: 24.832799911499997 },
         { iata: "RIX3", latitude: 56.92359924316406, longitude: 23.971099853515625 },
-        { iata: "VNO3", latitude: 54.63410200000000, longitude: 25.285801000000000 },
-        { iata: "WAW3", latitude: 52.16569900510000, longitude: 20.967100143399996 },
-        { iata: "FRA3", latitude: 50.03333300000000, longitude: 8.5705560000000000 }
+        { iata: "VNO3", latitude: 54.634102, longitude: 25.285801 },
+        { iata: "WAW3", latitude: 52.1656990051, longitude: 20.967100143399996 },
+        { iata: "FRA3", latitude: 50.033333, longitude: 8.570556 }
     ]);
 
     conRepo.getConnections.returns([
@@ -142,7 +142,7 @@ function getConfiguredGraphBuilder(): AirportGraphBuilder {
         { sourceIata: "TLL3", destinationIata: "RIX3" },
         { sourceIata: "RIX3", destinationIata: "VNO3" },
         { sourceIata: "VNO3", destinationIata: "WAW3" },
-        { sourceIata: "WAW3", destinationIata: "FRA3" },
+        { sourceIata: "WAW3", destinationIata: "FRA3" }
     ]);
 
     return new AirportGraphBuilder(new AirportDistanceCalculator(), airRepo, conRepo);

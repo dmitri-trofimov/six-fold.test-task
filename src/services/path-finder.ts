@@ -11,24 +11,17 @@ export class PathFinder {
     private readonly _graph: AirportGraph;
     private readonly _settings: Settings;
 
-    public constructor(
-        airportGraphBuilder: AirportGraphBuilder,
-        settingsProvider: SettingsProvider
-    ) {
-        if (!airportGraphBuilder)
-            throw new Error("Argument 'airportGraphBuilder' is not defined.");
-        if (!settingsProvider)
-            throw new Error("Argument 'settingsProvider' is not defined.");
+    public constructor(airportGraphBuilder: AirportGraphBuilder, settingsProvider: SettingsProvider) {
+        if (!airportGraphBuilder) throw new Error("Argument 'airportGraphBuilder' is not defined.");
+        if (!settingsProvider) throw new Error("Argument 'settingsProvider' is not defined.");
 
         this._graph = airportGraphBuilder.buildAirportGraph();
         this._settings = settingsProvider.getSettings();
     }
 
     public findPath(srcIata: string, destIata: string): Connection[] {
-        if (!this._isKnownIata(srcIata))
-            throw new Error(`Source airport '${srcIata}' is not recognized.`);
-        if (!this._isKnownIata(destIata))
-            throw new Error(`Destination airport '${destIata}' is not recognized.`);
+        if (!this._isKnownIata(srcIata)) throw new Error(`Source airport '${srcIata}' is not recognized.`);
+        if (!this._isKnownIata(destIata)) throw new Error(`Destination airport '${destIata}' is not recognized.`);
 
         const source = this._graph.airports.get(srcIata) as Airport;
         const sourceConnection: Connection = {
@@ -102,10 +95,7 @@ export class PathFinder {
         return this._graph.airports.has(iata);
     }
 
-    private _addWaypoint(
-        bestWaypoints: Map<string, Waypoint[]>,
-        waypoint: Waypoint
-    ): void {
+    private _addWaypoint(bestWaypoints: Map<string, Waypoint[]>, waypoint: Waypoint): void {
         const iata = waypoint.connection.airport.iata;
 
         let waypoints = bestWaypoints.get(iata);
@@ -145,7 +135,7 @@ export class PathFinder {
                     return {
                         canBeAdded: false,
                         inefficientWaypoints: []
-                    }
+                    };
                 }
             } else {
                 if (existingWaypoint.fullLength <= waypoint.fullLength) {
@@ -153,7 +143,7 @@ export class PathFinder {
                     return {
                         canBeAdded: false,
                         inefficientWaypoints: []
-                    }
+                    };
                 }
             }
 
@@ -168,10 +158,7 @@ export class PathFinder {
         };
     }
 
-    private _removeInefficientWaypoints(
-        bestWaypoints: Map<string, Waypoint[]>,
-        inefficientWaypoints: Waypoint[]
-    ): void {
+    private _removeInefficientWaypoints(bestWaypoints: Map<string, Waypoint[]>, inefficientWaypoints: Waypoint[]): void {
         if (inefficientWaypoints.length === 0) {
             return;
         }

@@ -12,14 +12,13 @@ export abstract class DataProvider {
     private async getRawTextData(url: string): Promise<string> {
         try {
             const response = await axios.get<string>(url);
-            
+
             return response.data;
-        }
-        catch (error) {
+        } catch (error) {
             if (!error.isAxiosError || !error.response?.status || !error.response?.statusText) {
                 throw error;
             }
-    
+
             throw new Error(`Faied to retrieve airport data: '${error.response.status} - ${error.response.statusText}`);
         }
     }

@@ -41,7 +41,7 @@ function pathToJson(connections: Connection[], calculationTimeMS: number) {
         totalDistanceKM,
         calculationTimeMS,
         flights
-    }
+    };
 }
 
 app.get("/airports", async (_req, res) => {
@@ -74,8 +74,7 @@ app.get("/:src/:dest", async (req, res) => {
         const json = pathToJson(path, end.getTime() - start.getTime());
 
         sendPrettyJson(res, json);
-    }
-    catch (error) {
+    } catch (error) {
         res.statusCode = 500;
         res.statusMessage = "Error occured. See response body for more info.";
 
@@ -86,7 +85,7 @@ app.get("/:src/:dest", async (req, res) => {
         } else if (typeof error === "string") {
             message = error;
         } else {
-            message = "Unknown error."
+            message = "Unknown error.";
         }
 
         sendPrettyJson(res, {

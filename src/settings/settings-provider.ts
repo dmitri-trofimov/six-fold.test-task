@@ -11,6 +11,6 @@ export class SettingsProvider {
             pathFinding: {
                 maxLegCount: 4
             }
-        }
+        };
     }
 }

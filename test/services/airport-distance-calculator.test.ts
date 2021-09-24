@@ -66,15 +66,15 @@ describe("AirportDistanceCalculator", () => {
                 it("should calculate correctly", () => {
                     const d = calculator.getDistance(northPole, southPole);
                     expect(d).to.be.approximately(20024, 1);
-                })
+                });
             });
 
             describe("and they are TLL and RIX", () => {
                 it("should calculate correctly", () => {
                     const d = calculator.getDistance(tllAirport, rixAirport);
-                    expect(d).to.be.approximately(282, .5);
+                    expect(d).to.be.approximately(282, 0.5);
                 });
             });
-        })
+        });
     });
 });

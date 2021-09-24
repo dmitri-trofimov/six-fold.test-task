@@ -25,5 +25,5 @@ export class ConnectionDataProvider extends DataProvider {
         }
 
         return result;
-    }   
+    }
 }

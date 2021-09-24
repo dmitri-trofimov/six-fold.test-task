@@ -19,14 +19,17 @@ export class AirportGraphBuilder {
         airportRepository: AirportRepository,
         connectionRepository: ConnectionRepository
     ) {
-        if (!airportDistanceCalculator)
+        if (!airportDistanceCalculator) {
             throw new Error("Argument 'airportDistanceCalculator' is not defined.");
+        }
 
-        if (!airportRepository)
+        if (!airportRepository) {
             throw new Error("Argument 'airportRepository' is not defined.");
+        }
 
-        if (!connectionRepository)
+        if (!connectionRepository) {
             throw new Error("Argument 'connectionRepository' is not defined.");
+        }
 
         this._airportDistanceCalculator = airportDistanceCalculator;
         this._airports = airportRepository.getAirports();
@@ -37,8 +40,9 @@ export class AirportGraphBuilder {
         const airports = new Map<string, Airport>();
 
         for (const airportRaw of this._airports) {
-            if (airports.has(airportRaw.iata))
+            if (airports.has(airportRaw.iata)) {
                 continue;
+            }
 
             const airport: Airport = {
                 iata: airportRaw.iata,
@@ -54,31 +58,32 @@ export class AirportGraphBuilder {
             const sourceAirport = airports.get(connectionRaw.sourceIata);
             const destinationAirport = airports.get(connectionRaw.destinationIata);
 
-            if (!sourceAirport || !destinationAirport)
+            if (!sourceAirport || !destinationAirport) {
                 continue;
+            }
 
-            if (sourceAirport.connections.some(x => x.airport === destinationAirport))
+            if (sourceAirport.connections.some(x => x.airport === destinationAirport)) {
                 continue;
+            }
 
-            if (destinationAirport.connections.some(x => x.airport === sourceAirport))
+            if (destinationAirport.connections.some(x => x.airport === sourceAirport)) {
                 continue;
+            }
 
             const airportDistance = this._airportDistanceCalculator.getDistance(sourceAirport, destinationAirport);
 
-            const sourceAirportConnections = (sourceAirport.connections as Connection[]);
-            const destinationAirportConnections = (destinationAirport.connections as Connection[]);
+            const sourceAirportConnections = sourceAirport.connections as Connection[];
+            const destinationAirportConnections = destinationAirport.connections as Connection[];
 
-            sourceAirportConnections
-                .push({
-                    airport: destinationAirport,
-                    distance: airportDistance
-                });
+            sourceAirportConnections.push({
+                airport: destinationAirport,
+                distance: airportDistance
+            });
 
-            destinationAirportConnections
-                .push({
-                    airport: sourceAirport,
-                    distance: airportDistance
-                });
+            destinationAirportConnections.push({
+                airport: sourceAirport,
+                distance: airportDistance
+            });
         }
 
         return {
